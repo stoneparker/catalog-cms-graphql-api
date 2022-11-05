@@ -3,16 +3,32 @@ import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { CreateUser } from '../dtos/inputs/user';
+import { LoginUser, CreateUser } from '../dtos/inputs/user';
 import { AuthReturn, User, UserModel } from '../dtos/models/user';
 import envConfig from '../config/env';
 import mongoose from 'mongoose';
 
 @Resolver(() => User)
 export class UserResolver {
-  @Query(() => String)
-  async loginUser() {
-    return 'Hello World';
+  @Query(() => AuthReturn)
+  async loginUser(@Arg('data') data: LoginUser) {
+    const user = await UserModel.findOne({ email: data.email });
+
+    if (!user) {
+      throw new GraphQLError('Wrong email or password');
+    }
+
+    const passwordCheck = bcrypt.compareSync(data.password, user.password);
+    
+    if (!passwordCheck) {
+      throw new GraphQLError('Wrong email or password');
+    }
+
+    return {
+      _id: user._id,
+      name: user.name,
+      token: jwt.sign({ ...user }, envConfig.secret, { expiresIn: '2w' }),
+    };
   }
 
   @Mutation(() => AuthReturn)
