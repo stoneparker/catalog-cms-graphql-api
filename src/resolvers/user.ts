@@ -1,13 +1,12 @@
-import { randomUUID } from 'node:crypto';
 import { GraphQLError } from 'graphql';
 import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import { CreateUser } from '../dtos/inputs/user';
-import { AuthReturn, User } from '../dtos/models/user';
-import { Storage } from '../storage';
+import { AuthReturn, User, UserModel } from '../dtos/models/user';
 import envConfig from '../config/env';
+import mongoose from 'mongoose';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -18,9 +17,8 @@ export class UserResolver {
 
   @Mutation(() => AuthReturn)
   async createUser(@Arg('data') data: CreateUser) {
-    const userExists = Storage.getUsers().some((user) => user.email === data.email);
+    const userExists = await UserModel.findOne({ email: data.email });
 
-    console.log(userExists, Storage.getUsers());
     if (userExists) {
       throw new GraphQLError('User already exists');
     }
@@ -28,12 +26,12 @@ export class UserResolver {
     const salt = bcrypt.genSaltSync(10);
     data.password = bcrypt.hashSync(data.password, salt);
 
-    const user = { id: randomUUID(), ...data }
+    const user = { _id: new mongoose.Types.ObjectId(), ...data };
 
-    Storage.setUsers([...Storage.getUsers(), user]);
+    await UserModel.create(user);
 
     return {
-      id: user.id,
+      _id: user._id,
       name: user.name,
       token: jwt.sign({ ...user }, envConfig.secret, { expiresIn: '2w' }),
     };
