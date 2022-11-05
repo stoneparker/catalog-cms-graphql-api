@@ -1,5 +1,7 @@
 import 'reflect-metadata';
+import mongoose from 'mongoose';
 
+import envConfig from './config/env';
 import path from 'node:path';
 
 import { ApolloServer } from 'apollo-server';
@@ -7,10 +9,10 @@ import { buildSchema } from 'type-graphql';
 import { UserResolver } from './resolvers/user';
 import { ProductResolver } from './resolvers/product';
 
-import { DbConnection } from './db'; 
-
 async function bootstrapServer() {
-  new DbConnection();
+  const { user, password, host } = envConfig.db;
+
+  await mongoose.connect(`mongodb+srv://${user}:${password}@${host}/?retryWrites=true&w=majority`);
 
   const schema = await buildSchema({
     resolvers: [UserResolver, ProductResolver],
