@@ -7,7 +7,11 @@ import { buildSchema } from 'type-graphql';
 import { UserResolver } from './resolvers/user';
 import { ProductResolver } from './resolvers/product';
 
+import { DbConnection } from './db'; 
+
 async function bootstrapServer() {
+  new DbConnection();
+
   const schema = await buildSchema({
     resolvers: [UserResolver, ProductResolver],
     emitSchemaFile: path.resolve(__dirname, 'schema.gql'),
