@@ -8,10 +8,7 @@ export class DbConnection {
   constructor() {
     const { user, password, host } = envConfig.db;
 
-    const connection = mongoose.createConnection(`mongodb+srv://${user}:${password}@${host}/?retryWrites=true&w=majority`, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const connection = mongoose.createConnection(`mongodb+srv://${user}:${password}@${host}/?retryWrites=true&w=majority`);
 
     DbConnection.bootstrap(connection);
   }
