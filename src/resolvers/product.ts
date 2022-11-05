@@ -1,4 +1,4 @@
-import { Query, Mutation, Resolver, Arg } from 'type-graphql';
+import { Query, Mutation, Resolver, Arg, Authorized } from 'type-graphql';
 
 import { Product, ProductModel, ProductIdModel } from '../dtos/models/product';
 import { DeleteProductInput, GetProductInput, ProductInput, ProductModelInput } from '../dtos/inputs/product';
@@ -7,17 +7,20 @@ import { GraphQLError } from 'graphql';
 
 @Resolver(() => ProductModel)
 export class ProductResolver {
+  @Authorized()
   @Query(() => [ProductModel])
   async listProducts() {
     return Product.find().lean(); // implements pagination, index by name and barcode
   }
 
+  @Authorized()
   @Query(() => ProductModel)
   // implements index by name and barcode
   async getProduct(@Arg('data') data: GetProductInput) {
     return Product.findOne(data).lean();
   }
 
+  @Authorized()
   @Mutation(() => ProductModel)
   async createProduct(@Arg('data') data: ProductInput) {
     const productExists = await Product.findOne({
@@ -36,6 +39,7 @@ export class ProductResolver {
     return newProduct._id;
   }
 
+  @Authorized()
   @Mutation(() => ProductModel)
   async editProduct(@Arg('data') data: ProductModelInput) {
     const { _id: productId, ...product } = data;
@@ -65,6 +69,7 @@ export class ProductResolver {
     return data;
   }
 
+  @Authorized()
   @Mutation(() => String)
   async deleteProduct(@Arg('data') data: DeleteProductInput) {
     await Product.deleteOne({ _id: data._id });
