@@ -2,17 +2,17 @@ import { GraphQLError } from 'graphql';
 import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 import { LoginUser, CreateUser } from '../dtos/inputs/user';
 import { AuthReturn, User, UserModel } from '../dtos/models/user';
 import envConfig from '../config/env';
-import mongoose from 'mongoose';
 
 @Resolver(() => User)
 export class UserResolver {
   @Query(() => AuthReturn)
   async loginUser(@Arg('data') data: LoginUser) {
-    const user = await UserModel.findOne({ email: data.email });
+    const user = await UserModel.findOne({ email: data.email }).lean();
 
     if (!user) {
       throw new GraphQLError('Wrong email or password');
