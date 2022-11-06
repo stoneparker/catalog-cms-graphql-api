@@ -10,7 +10,7 @@ export class ProductResolver {
   @Authorized()
   @Query(() => [ProductModel])
   async listProducts() {
-    return Product.find().lean(); // implements pagination, index by name and barcode
+    return Product.find().sort({ name: -1 }).lean(); // implements pagination, index by name and barcode
   }
 
   @Authorized()
