@@ -34,13 +34,11 @@ export class ProductInput {
 @InputType()
 export class DeleteProductInput {
   @Field(() => ID)
-  @prop()
   _id: string;
 }
 
 @InputType()
 export class ProductModelInput extends ProductInput {
   @Field(() => ID)
-  @prop()
   _id: string;
 }

@@ -1,9 +1,9 @@
 import { Query, Mutation, Resolver, Arg, Authorized } from 'type-graphql';
+import mongoose from 'mongoose';
+import { GraphQLError } from 'graphql';
 
 import { Product, ProductModel, ProductIdModel } from '../dtos/models/product';
 import { DeleteProductInput, GetProductInput, ProductInput, ProductModelInput } from '../dtos/inputs/product';
-import mongoose from 'mongoose';
-import { GraphQLError } from 'graphql';
 
 @Resolver(() => ProductModel)
 export class ProductResolver {
@@ -17,7 +17,7 @@ export class ProductResolver {
   @Query(() => ProductModel)
   // implements index by name and barcode
   async getProduct(@Arg('data') data: GetProductInput) {
-    return Product.findOne(data).lean();
+    return Product.findOne({ $or: [{ name: data.name }, { barcode: data.barcode }] }).lean();
   }
 
   @Authorized()

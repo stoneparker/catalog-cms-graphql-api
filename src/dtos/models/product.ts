@@ -1,9 +1,11 @@
-import { Field, ObjectType, ID, InputType } from 'type-graphql';
-import { prop, getModelForClass } from '@typegoose/typegoose';
+import { Field, ObjectType, ID } from 'type-graphql';
+import { prop, getModelForClass, index } from '@typegoose/typegoose';
 import mongoose from 'mongoose';
 
 import { ProductInput } from '../inputs/product';
 
+@index({ name: 1 }, { unique: true })
+@index({ barcode: 1 }, { unique: true })
 @ObjectType()
 export class ProductModel extends ProductInput {
   @Field(() => ID)
