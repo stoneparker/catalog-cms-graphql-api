@@ -10,7 +10,7 @@ import envConfig from '../config/env';
 
 @Resolver(() => User)
 export class UserResolver {
-  @Query(() => AuthReturn)
+  @Mutation(() => AuthReturn)
   async loginUser(@Arg('data') data: LoginUser) {
     const user = await UserModel.findOne({ email: data.email }).lean();
 
@@ -27,6 +27,7 @@ export class UserResolver {
     return {
       _id: user._id,
       name: user.name,
+      email: user.email,
       token: jwt.sign({ ...user }, envConfig.secret, { expiresIn: '2w' }),
     };
   }
@@ -36,7 +37,13 @@ export class UserResolver {
     const userExists = await UserModel.findOne({ email: data.email });
 
     if (userExists) {
-      throw new GraphQLError('User already exists');
+      throw new GraphQLError(
+        'User already exists',
+        { extensions: {
+          code: 'BAD_REQUEST',
+          http: { status: 400 },
+        }},
+      );
     }
 
     const salt = bcrypt.genSaltSync(10);
@@ -49,6 +56,7 @@ export class UserResolver {
     return {
       _id: user._id,
       name: user.name,
+      email: user.email,
       token: jwt.sign({ ...user }, envConfig.secret, { expiresIn: '2w' }),
     };
   }

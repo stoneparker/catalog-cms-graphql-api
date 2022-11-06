@@ -21,7 +21,7 @@ export class ProductResolver {
   }
 
   @Authorized()
-  @Mutation(() => ProductModel)
+  @Mutation(() => ProductIdModel)
   async createProduct(@Arg('data') data: ProductInput) {
     const productExists = await Product.findOne({
       $or: [{ name: data.name }, { barcode: data.barcode }],
@@ -36,12 +36,12 @@ export class ProductResolver {
       ...data
     });
 
-    return newProduct._id;
+    return { _id: newProduct._id };
   }
 
   @Authorized()
-  @Mutation(() => ProductModel)
-  async editProduct(@Arg('data') data: ProductModelInput) {
+  @Mutation(() => ProductIdModel)
+  async updateProduct(@Arg('data') data: ProductModelInput) {
     const { _id: productId, ...product } = data;
 
     const productExists = await Product.findById(productId);
@@ -66,14 +66,14 @@ export class ProductResolver {
       { $set: product },
     );
 
-    return data;
+    return { _id: data._id };
   }
 
   @Authorized()
-  @Mutation(() => String)
+  @Mutation(() => ProductIdModel)
   async deleteProduct(@Arg('data') data: DeleteProductInput) {
     await Product.deleteOne({ _id: data._id });
 
-    return data._id;
+    return { _id: data._id };
   }
 }

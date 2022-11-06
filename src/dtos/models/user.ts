@@ -30,6 +30,9 @@ export class AuthReturn {
 
   @Field()
   name: string;
+
+  @Field()
+  email: string;
 }
 
 export const UserModel = getModelForClass(User, {

@@ -13,27 +13,21 @@ export class GetProductInput {
 @InputType()
 export class ProductInput {
   @Field()
-  @prop()
   name: string;
 
   @Field()
-  @prop()
   barcode: string;
 
   @Field()
-  @prop()
   price: string;
 
   @Field()
-  @prop()
   availableQuantity: number;
 
   @Field()
-  @prop()
   description: string;
 
   @Field()
-  @prop()
   imageUrl: string;
 }
 

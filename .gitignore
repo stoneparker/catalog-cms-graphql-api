@@ -4,6 +4,4 @@ dist
 package-lock.json
 yarn.lock
 
-*.gql
-
 .env

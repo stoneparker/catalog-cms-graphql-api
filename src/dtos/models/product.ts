@@ -9,6 +9,30 @@ export class ProductModel extends ProductInput {
   @Field(() => ID)
   @prop()
   _id: mongoose.Types.ObjectId;
+
+  @Field()
+  @prop()
+  name: string;
+
+  @Field()
+  @prop()
+  barcode: string;
+
+  @Field()
+  @prop()
+  price: string;
+
+  @Field()
+  @prop()
+  availableQuantity: number;
+
+  @Field()
+  @prop()
+  description: string;
+
+  @Field()
+  @prop()
+  imageUrl: string;
 }
 
 @ObjectType()
