@@ -2,8 +2,14 @@ import 'reflect-metadata';
 import mongoose from 'mongoose';
 import path from 'node:path';
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+// import { startStandaloneServer } from '@apollo/server/standalone';
 import { buildSchema } from 'type-graphql';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import express from 'express';
+import http from 'http';
 
 import envConfig from './config/env';
 import { authChecker } from './utils/authChecker';
@@ -23,16 +29,33 @@ async function bootstrapServer() {
     authChecker,
   });
 
-  const server = new ApolloServer<GraphQLContext>({ schema });
+  const app = express();
+  const httpServer = http.createServer(app);
 
-  const { url } = await startStandaloneServer(
-    server, {
-    context: async ({ req }) => {
-      return { token: req.headers.authorization }
-    },
-  });
+  const server = new ApolloServer<GraphQLContext>({ schema, plugins: [ApolloServerPluginDrainHttpServer({ httpServer })] });
 
-  console.log('Server running on', url); 
+  await server.start();
+
+  app.use(
+    '/',
+    cors<cors.CorsRequest>({ origin: '*' }),
+    bodyParser.json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => ({ token: req.headers.authorization }),
+    }),
+  );
+
+  await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
+  console.log(`Server running on http://localhost:4000/`);
+
+  // const { url } = await startStandaloneServer(
+  //   server, {
+  //   context: async ({ req }) => {
+  //     return { token: req.headers.authorization }
+  //   },
+  // });
+
+  // console.log('Server running on', url); 
 }
 
 bootstrapServer();
