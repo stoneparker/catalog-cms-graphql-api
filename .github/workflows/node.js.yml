@@ -3,6 +3,12 @@
 
 name: Node.js CI
 
+env:
+    JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    DB_HOST: ${{ secrets.DB_HOST }}
+    DB_USER: ${{ secrets.DB_USER }}
+    DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 on:
   push:
     branches: [ "main" ]
