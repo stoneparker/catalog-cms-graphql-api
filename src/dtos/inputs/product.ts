@@ -19,7 +19,7 @@ export class ProductInput {
   barcode: string;
 
   @Field()
-  price: string;
+  price: number;
 
   @Field()
   availableQuantity: number;
