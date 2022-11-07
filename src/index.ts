@@ -36,6 +36,10 @@ async function bootstrapServer() {
 
   await server.start();
 
+  app.use((_: Request, res: Response) => {
+    res.header('Access-Control-Allow-Origin', '*');
+  });
+
   app.options('*', cors());
 
   app.use(
