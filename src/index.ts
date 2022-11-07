@@ -32,8 +32,6 @@ async function bootstrapServer() {
   const app = express();
   const httpServer = http.createServer(app);
 
-  app.use(cors());
-
   const server = new ApolloServer<GraphQLContext>({ schema, plugins: [ApolloServerPluginDrainHttpServer({ httpServer })] });
 
   await server.start();
@@ -42,9 +40,11 @@ async function bootstrapServer() {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   });
 
+  app.options('*', cors());
+
   app.use(
     '/',
-    // cors<cors.CorsRequest>(),
+    cors<cors.CorsRequest>(),
     bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req }) => ({ token: req.headers.authorization }),
