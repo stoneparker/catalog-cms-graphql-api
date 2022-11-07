@@ -40,10 +40,8 @@ async function bootstrapServer() {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   });
 
-  app.use(cors());
-
   app.use(
-    '/',
+    '/graphql',
     cors<cors.CorsRequest>(),
     bodyParser.json(),
     expressMiddleware(server, {
