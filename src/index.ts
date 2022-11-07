@@ -8,7 +8,7 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { buildSchema } from 'type-graphql';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import http from 'http';
 
 import envConfig from './config/env';
@@ -35,6 +35,10 @@ async function bootstrapServer() {
   const server = new ApolloServer<GraphQLContext>({ schema, plugins: [ApolloServerPluginDrainHttpServer({ httpServer })] });
 
   await server.start();
+
+  app.use((_: Request, res: Response) => {
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  });
 
   app.use(
     '/',
