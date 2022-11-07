@@ -32,6 +32,8 @@ async function bootstrapServer() {
   const app = express();
   const httpServer = http.createServer(app);
 
+  app.use(cors());
+
   const server = new ApolloServer<GraphQLContext>({ schema, plugins: [ApolloServerPluginDrainHttpServer({ httpServer })] });
 
   await server.start();
@@ -41,8 +43,8 @@ async function bootstrapServer() {
   });
 
   app.use(
-    '/graphql',
-    cors<cors.CorsRequest>(),
+    '/',
+    // cors<cors.CorsRequest>(),
     bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req }) => ({ token: req.headers.authorization }),
