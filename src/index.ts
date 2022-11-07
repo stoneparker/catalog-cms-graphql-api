@@ -36,10 +36,6 @@ async function bootstrapServer() {
 
   await server.start();
 
-  app.use((_: Request, res: Response) => {
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  });
-
   app.options('*', cors());
 
   app.use(
