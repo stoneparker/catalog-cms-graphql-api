@@ -40,9 +40,11 @@ async function bootstrapServer() {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   });
 
+  app.use(cors());
+
   app.use(
     '/',
-    cors<cors.CorsRequest>({ origin: '*' }),
+    cors<cors.CorsRequest>(),
     bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req }) => ({ token: req.headers.authorization }),
