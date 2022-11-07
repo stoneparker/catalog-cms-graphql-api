@@ -4,7 +4,7 @@ import path from 'node:path';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-// import { startStandaloneServer } from '@apollo/server/standalone';
+import { startStandaloneServer } from '@apollo/server/standalone';
 import { buildSchema } from 'type-graphql';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -32,36 +32,39 @@ async function bootstrapServer() {
   const app = express();
   const httpServer = http.createServer(app);
 
-  const server = new ApolloServer<GraphQLContext>({ schema, plugins: [ApolloServerPluginDrainHttpServer({ httpServer })] });
-
-  await server.start();
-
-  app.use((_: Request, res: Response) => {
-    res.header('Access-Control-Allow-Origin', '*');
+  const server = new ApolloServer<GraphQLContext>({
+    schema,
+    // plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
   });
 
-  app.options('*', cors());
+  // await server.start();
 
-  app.use(
-    '/',
-    cors<cors.CorsRequest>(),
-    bodyParser.json(),
-    expressMiddleware(server, {
-      context: async ({ req }) => ({ token: req.headers.authorization }),
-    }),
-  );
-
-  await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
-  console.log(`Server running on http://localhost:4000/`);
-
-  // const { url } = await startStandaloneServer(
-  //   server, {
-  //   context: async ({ req }) => {
-  //     return { token: req.headers.authorization }
-  //   },
+  // app.use((_: Request, res: Response) => {
+  //   res.header('Access-Control-Allow-Origin', '*');
   // });
 
-  // console.log('Server running on', url); 
+  // app.options('*', cors());
+
+  // app.use(
+  //   '/',
+  //   cors<cors.CorsRequest>(),
+  //   bodyParser.json(),
+  //   expressMiddleware(server, {
+  //     context: async ({ req }) => ({ token: req.headers.authorization }),
+  //   }),
+  // );
+
+  // await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
+  // console.log(`Server running on http://localhost:4000/`);
+
+  const { url } = await startStandaloneServer(
+    server, {
+    context: async ({ req }) => {
+      return { token: req.headers.authorization }
+    },
+  });
+
+  console.log('Server running on', url); 
 }
 
 bootstrapServer();
