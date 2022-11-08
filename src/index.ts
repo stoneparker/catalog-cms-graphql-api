@@ -4,6 +4,8 @@ import path from 'node:path';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { buildSchema } from 'type-graphql';
+import express from 'express';
+import cors from 'cors';
 
 import envConfig from './config/env';
 import { authChecker } from './utils/authChecker';
@@ -12,6 +14,27 @@ import { UserResolver } from './resolvers/user';
 import { ProductResolver } from './resolvers/product';
 import { GraphQLContext } from './types/context';
 
+async function startApolloServer(server: ApolloServer) {
+  const { url } = await startStandaloneServer(
+    server, {
+    context: async ({ req }) => {
+      return { token: req.headers.authorization }
+    },
+    listen: { port: Number(process.env.port) || 4000 },
+  });
+
+  console.log('Apollo server running on', url);
+}
+
+async function startStaticServer() {
+  const app = express();
+
+  app.use(cors());
+  app.use('/', express.static(path.join(__dirname, 'public')));
+
+  app.listen(3333, () => console.log('Static server running on http://localhost:3333/'));
+}
+
 export async function bootstrapServer() {
   const { user, password, host } = envConfig.db;
 
@@ -19,23 +42,15 @@ export async function bootstrapServer() {
 
   const schema = await buildSchema({
     resolvers: [UserResolver, ProductResolver],
-    emitSchemaFile: path.resolve(__dirname, 'schema.gql'),
+    emitSchemaFile: path.resolve(__dirname, 'public/schema.gql'),
     authChecker,
   });
 
-  const server = new ApolloServer<GraphQLContext>({
-    schema,
-  });
+  const server = new ApolloServer<GraphQLContext>({ schema, csrfPrevention: false });
 
   if (process.env.NODE_ENV !== 'test') {
-    const { url } = await startStandaloneServer(
-      server, {
-      context: async ({ req }) => {
-        return { token: req.headers.authorization }
-      },
-    });
-
-    console.log('Server running on', url);
+    startApolloServer(server);
+    startStaticServer();
   }
 
   return server;

@@ -3,7 +3,7 @@ import { ApolloServer } from '@apollo/server';
 import { faker } from '@faker-js/faker';
 
 import { GraphQLContext } from '../types/context';
-import { bootstrapServer} from '../';
+import { bootstrapServer } from '../';
 import { ProductModel } from '../dtos/models/product';
 
 describe('Product integration tests', () => {
