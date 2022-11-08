@@ -9,6 +9,6 @@ GraphQL API for Product Catalog CMS
 - [x] it should support GraphQL Mutations
 - [x] open-sourced on your GitHub
 - [x] authentication system
-- [ ] deploy (Vercel? Netlify? Heroku? AWS?)
+- [ ] deploy (Heroku? AWS?)
 - [x] CI/CD (GitHub Actions, CircleCI etc)
 - [x] automated tests: [Jest](https://jestjs.io/)
