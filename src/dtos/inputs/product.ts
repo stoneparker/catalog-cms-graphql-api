@@ -1,14 +1,4 @@
 import { Field, InputType, ID } from 'type-graphql';
-import { prop } from '@typegoose/typegoose';
-
-@InputType()
-export class GetProductInput {
-  @Field()
-  name: string;
-
-  @Field()
-  barcode: string;
-}
 
 @InputType()
 export class ProductInput {

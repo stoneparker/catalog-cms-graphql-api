@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { GraphQLError } from 'graphql';
 
 import { Product, ProductModel, ProductIdModel } from '../dtos/models/product';
-import { DeleteProductInput, GetProductInput, ProductInput, ProductModelInput } from '../dtos/inputs/product';
+import { DeleteProductInput, ProductInput, ProductModelInput } from '../dtos/inputs/product';
 
 @Resolver(() => ProductModel)
 export class ProductResolver {
@@ -11,13 +11,6 @@ export class ProductResolver {
   @Query(() => [ProductModel])
   async listProducts() {
     return Product.find().sort({ name: -1 }).lean(); // implements pagination, index by name and barcode
-  }
-
-  @Authorized()
-  @Query(() => ProductModel)
-  // implements index by name and barcode
-  async getProduct(@Arg('data') data: GetProductInput) {
-    return Product.findOne({ $or: [{ name: data.name }, { barcode: data.barcode }] }).lean();
   }
 
   @Authorized()
