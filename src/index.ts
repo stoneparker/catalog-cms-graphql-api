@@ -27,16 +27,16 @@ export async function bootstrapServer() {
     schema,
   });
 
-  if (process.env.NODE_ENV === 'test') return server;
+  if (process.env.NODE_ENV !== 'test') {
+    const { url } = await startStandaloneServer(
+      server, {
+      context: async ({ req }) => {
+        return { token: req.headers.authorization }
+      },
+    });
 
-  const { url } = await startStandaloneServer(
-    server, {
-    context: async ({ req }) => {
-      return { token: req.headers.authorization }
-    },
-  });
-
-  console.log('Server running on', url);
+    console.log('Server running on', url);
+  }
 
   return server;
 }
