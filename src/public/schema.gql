@@ -20,11 +20,6 @@ input DeleteProductInput {
   _id: ID!
 }
 
-input GetProductInput {
-  barcode: String!
-  name: String!
-}
-
 input LoginUser {
   email: String!
   password: String!
@@ -72,6 +67,5 @@ input ProductModelInput {
 }
 
 type Query {
-  getProduct(data: GetProductInput!): ProductModel!
   listProducts: [ProductModel!]!
 }
