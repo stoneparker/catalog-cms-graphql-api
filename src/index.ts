@@ -20,7 +20,7 @@ async function startApolloServer(server: ApolloServer) {
     context: async ({ req }) => {
       return { token: req.headers.authorization }
     },
-    listen: { port: Number(process.env.port) || 4000 },
+    listen: { port: 4000 },
   });
 
   console.log('Apollo server running on', url);
@@ -32,7 +32,7 @@ async function startStaticServer() {
   app.use(cors());
   app.use('/', express.static(path.join(__dirname, 'public')));
 
-  app.listen(3333, () => console.log('Static server running on http://localhost:3333/'));
+  app.listen(Number(process.env.port) || 3333, () => console.log('Static server running on http://localhost:3333/'));
 }
 
 export async function bootstrapServer() {
