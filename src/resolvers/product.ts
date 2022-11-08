@@ -28,7 +28,13 @@ export class ProductResolver {
     });
 
     if (productExists) {
-      throw new GraphQLError('Already exists a product with that name or barcode');
+      throw new GraphQLError(
+        'Already exists a product with that name or barcode',
+        { extensions: {
+          code: 'BAD_USER_INPUT',
+          http: { status: 400 },
+        } },
+      );
     }
 
     const newProduct = await Product.create({
@@ -47,7 +53,13 @@ export class ProductResolver {
     const productExists = await Product.findById(productId);
 
     if (!productExists) {
-      throw new GraphQLError('Product not exists');
+      throw new GraphQLError(
+        'Product not exists',
+        { extensions: {
+          code: 'BAD_USER_INPUT',
+          http: { status: 400 },
+        } },
+      );
     }
 
     const equalProduct = await Product.findOne({
@@ -58,7 +70,13 @@ export class ProductResolver {
     });
 
     if (equalProduct) {
-      throw new GraphQLError('Already exists a product with that name or barcode');
+      throw new GraphQLError(
+        'Already exists a product with that name or barcode',
+        { extensions: {
+          code: 'BAD_USER_INPUT',
+          http: { status: 400 },
+        } },
+      );
     }
 
     await Product.updateOne(

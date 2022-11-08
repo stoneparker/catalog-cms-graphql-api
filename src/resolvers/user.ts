@@ -15,13 +15,25 @@ export class UserResolver {
     const user = await UserModel.findOne({ email: data.email }).lean();
 
     if (!user) {
-      throw new GraphQLError('Wrong email or password');
+      throw new GraphQLError(
+        'Wrong email or password',
+        { extensions: {
+          code: 'UNAUTHORIZED',
+          http: { status: 401 },
+        }},
+      );
     }
 
     const passwordCheck = bcrypt.compareSync(data.password, user.password);
     
     if (!passwordCheck) {
-      throw new GraphQLError('Wrong email or password');
+      throw new GraphQLError(
+        'Wrong email or password',
+        { extensions: {
+          code: 'UNAUTHORIZED',
+          http: { status: 401 },
+        }},
+      );
     }
 
     return {
