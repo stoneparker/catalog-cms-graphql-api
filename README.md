@@ -7,7 +7,7 @@ GraphQL API for Product Catalog CMS
 - [x] it should connect to a database ([MongoDB](https://www.mongodb.com/) or [PostgreSQL](https://www.postgresql.org/))
 - [x] it should support GraphQL Queries
 - [x] it should support GraphQL Mutations
-- [x] open-sourced on your GitHub
+- [x] open-sourced on GitHub
 - [x] authentication system
 - [ ] deploy (Heroku? AWS?)
 - [x] CI/CD (GitHub Actions, CircleCI etc)
