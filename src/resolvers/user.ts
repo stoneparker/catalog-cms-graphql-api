@@ -52,7 +52,7 @@ export class UserResolver {
       throw new GraphQLError(
         'User already exists',
         { extensions: {
-          code: 'BAD_REQUEST',
+          code: 'BAD_USER_INPUT',
           http: { status: 400 },
         }},
       );
