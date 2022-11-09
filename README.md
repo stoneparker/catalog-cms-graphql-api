@@ -19,3 +19,4 @@ GraphQL API for [Product Catalog CMS](https://github.com/stoneparker/catalog-cms
 - [ ] money handling with [Dinero.js](https://dinerojs.com/)
 - [ ] add pagination to lists returns
 - [ ] deploy (Heroku? AWS?)
+- [ ] configure [ESLint](https://eslint.org/)
